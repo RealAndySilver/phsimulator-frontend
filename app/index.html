@@ -16,13 +16,13 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
   </head>
-  <body ng-app="simulatorApp">
+  <body ng-app="simulatorApp" ng-controller="AppController">
     <!--[if lte IE 8]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="header">
+    <div class="header" ng-controller="MainCtrl">
       <div class="navbar navbar-default" role="navigation">
         <div class="container">
           <div class="navbar-header">
@@ -43,6 +43,8 @@
               <li><a href="#/">Home</a></li>
               <li><a ng-href="#/Devices">Devices</a></li>
               <li><a ng-href="#/Settings">Settings</a></li>
+<!--               <li><toggle class="toggle" style = "margin-top:8px;" ng-model="master_switch.state" ng-change="toggleSwitch()" on="On" off="Off" onstyle="btn-info"></toggle></li> -->
+              <li><a ng-href="#/Settings">Target:<span class="nice-blue-text"> {{endpoint}}</span> </a></li>
             </ul>
           </div>
         </div>
@@ -55,7 +57,8 @@
 
     <div class="footer">
       <div class="container">
-        <p><span class="glyphicon glyphicon-heart"></span> © 2017, Emerson inc</p>
+        <p><span class="glyphicon glyphicon-heart"></span> © 2017, Emerson inc.</p>
+        <p><small>Local server url: {{app_url}}</small></p>
       </div>
     </div>
 
@@ -96,6 +99,9 @@
         <script src="scripts/controllers/settings.js"></script>
         <script src="scripts/controllers/update_device.js"></script>
         <script src="scripts/services/servercommunicator.js"></script>
+        <script src="scripts/services/settings.js"></script>
+        <script src="scripts/services/server.js"></script>
+        <script src="scripts/services/device.js"></script>
         <!-- endbuild -->
 </body>
 </html>

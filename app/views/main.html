@@ -1,13 +1,23 @@
-<div class="jumbotron">
-  <h1>Device Simulator!</h1>
+<div class="main-page">
+	<div class="circle">
+		<div class="logo-text">D<span class="super">2</span>S</div>
+	</div>
   <p class="lead">
   </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#/Devices">Go To Device List! <span class="glyphicon glyphicon-ok"></span></a></p>
+  <div class="home-title"> Device Data Simulator </div>
+<!--
+  <div class="center-div">
+		<toggle class="toggle center-content" ng-model="settings.active" ng-change="toggleSwitch()" on="On" off="Off" onstyle="btn-success"></toggle>
+  </div>
+-->
+  
+  
+<!--   <b><span class="nice-blue-text">{{settings.data.endpoint}}</span></b> -->
+  <div id="list-button-centered">
+  <br></br>
+  <p><a class="btn btn-lg btn-info" ng-href="#/Devices">Go To Device List <span class="glyphicon glyphicon-th-list"></span></a></p>
+  </div>
+
 </div>
 
-<div class="row marketing">
-	<div class="form-group">
-	  <h2> <b>Master Switch</b> </h2>
-	  <toggle class="toggle float-left" ng-model="settings.active" ng-change="toggleSwitch()" on="On" off="Off" onstyle="btn-success"></toggle>
-	</div>
-</div>
+

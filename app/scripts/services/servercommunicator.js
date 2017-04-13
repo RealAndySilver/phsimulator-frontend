@@ -8,11 +8,19 @@
  * Service in the simulatorApp.
  */
 angular.module('simulatorApp')
-  .service('ServerCommunicator', function ($http) {
+  .service('ServerCommunicator', function ($http, $rootScope) {
     // AngularJS will instantiate a singleton by calling "new" on this function
-    var app_url = 'http://192.241.187.135:3100/';
+    //var app_url = 'http://192.241.187.135:3200/';
+    var app_url = '';
     var self = this;
     this.settings = {};
+    $http.get("../config.json").then(function(response) { //success
+		console.log('Config.json',response);
+		app_url = response.data.local_endpoint;	
+		console.log('AppUrl',app_url)	
+	});
+    
+    
     function getSettings(callback){
 		$http.get(app_url+'api/settings/1').
 		then(function(response) {

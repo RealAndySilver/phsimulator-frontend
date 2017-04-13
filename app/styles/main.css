@@ -16,7 +16,14 @@ body {
   padding-left: 15px;
   padding-right: 15px;
 }
-
+.nice-blue-text{
+	color: #32a1e6;
+}
+.center-div{
+	width:59px;
+	height: 34px;
+	margin: 0 auto;
+}
 /* Custom page header */
 .header {
   border-bottom: 1px solid #e5e5e5;
@@ -174,6 +181,42 @@ body {
 	position: absolute;
 	margin-top: -21px;
 	margin-left: -6px;
+}
+.super{
+	font-size: 40px;
+	vertical-align: super;
+}
+.circle{
+	width: 140px;
+	height: 140px;
+	margin: 0 auto;
+	color: white;
+	border-radius: 0px;
+}
+.home-title{
+	margin: 0 auto;
+	width: 400px;
+	color: #484848;
+	text-align: center;
+	font-size: 30px;
+	font-weight: bold;
+}
+.logo-text{
+	font-size: 65px;
+	font-weight: bold;
+	background: #ff4242;
+	height: 140px;
+	width: 140px;
+	padding-top: 20px;
+	border-radius: 70px;
+	text-align: center;
+}
+#list-button-centered{
+	width: 198px;
+	margin: 0 auto;
+}
+.main-page{
+	height: 700px;
 }
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {

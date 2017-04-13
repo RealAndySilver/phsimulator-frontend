@@ -7,7 +7,7 @@
  * # NewDeviceCtrl
  * Controller of the simulatorApp
  */
-angular.module('simulatorApp').controller('NewDeviceCtrl', function ($scope, $http, $window, $timeout) {
+angular.module('simulatorApp').controller('NewDeviceCtrl', function ($scope, $http, $window, $timeout, DeviceService) {
 	var var_list = '';
 	var polling_info_keys = [];
 	var current_object = {};
@@ -177,7 +177,7 @@ angular.module('simulatorApp').controller('NewDeviceCtrl', function ($scope, $ht
     $scope.onChange = function(){
 	    //console.log('changed', $scope.dataModel);
     };
-    $scope.new_device = function(){
+    $scope.createDeviceInInternalServer = function(){
 	    $scope.alert={
 			type : null,
 			message : {
@@ -197,9 +197,9 @@ angular.module('simulatorApp').controller('NewDeviceCtrl', function ($scope, $ht
 	    $scope.dataModel.var_list = var_list.slice(0, -1);
 	    console.log('Var list',$scope.dataModel.var_list);
 		console.log('Pressed',$scope.dataModel);
-		$http.post('http://192.241.187.135:3100/api/device',$scope.dataModel).
-		then(function(response) {
-			
+		
+		DeviceService.create($scope.dataModel, 
+		function(response) {
 			$scope.alert = {
 				type : 'success',
 				message : {
@@ -211,8 +211,7 @@ angular.module('simulatorApp').controller('NewDeviceCtrl', function ($scope, $ht
 				$window.history.back();
 			}, 2000);
 
-		},
-		function(response) {
+		},function(response) {
 			$scope.alert = {
 				type : 'failed',
 				message : {

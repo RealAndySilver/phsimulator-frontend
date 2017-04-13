@@ -8,7 +8,7 @@
  * Controller of the simulatorApp
  */
 angular.module('simulatorApp')
-  .controller('UpdateDeviceCtrl', function ($scope, $http, $routeParams, $timeout, $window, $location, ServerCommunicator) {
+  .controller('UpdateDeviceCtrl', function ($scope, $http, $routeParams, $timeout, $window, $location, DeviceService) {
 	      
   	
 	$scope.activate_update = false;
@@ -17,13 +17,14 @@ angular.module('simulatorApp')
 	$scope.app = 'pumps';
 	$scope.dataModel = {};
     function getDevice(device_id){
-	    
-		$http.get('http://192.241.187.135:3100/api/device/'+device_id).
-		then(function(response) {
-		    	$scope.dataModel = response.data.data;
-		    	$scope.dataModel.update_rate = $scope.dataModel.update_rate+'';
-		    	$scope.dataModel.device_type = $scope.dataModel.device_type+'';
-		    console.log('Model',$scope.dataModel);
+		DeviceService.getDeviceByID(device_id,
+		function(response){
+			$scope.dataModel = response.data.data;
+	    	$scope.dataModel.update_rate = $scope.dataModel.update_rate+'';
+	    	$scope.dataModel.device_type = $scope.dataModel.device_type+'';
+	    	$scope.getDeviceStatus();
+		}, function(response){
+			console.log('Error getting devices');
 		});
 	}
 	getDevice($routeParams.device_id);
@@ -52,7 +53,7 @@ angular.module('simulatorApp')
 			Temp : ['Vibration 1','Peakvue 1','Vibration 2','Peakvue 2','Bear Temp 1','Bear Temp 2'],
 			Vibration : ['Vibration 1','Peakvue 1','Vibration 2','Peakvue 2','Bear Temp 1','Bear Temp 2']
 		},
-		update_rate_options : [1,5,10,20,30,60,120,180,240,300],
+		update_rate_options : ['1','5','10','20','30','60','120','180','240','300'],
 		units : {
 			Pressure : [
 				"InH2O 68F",  //PU_inH2OAt68F:  2.4864110E+02, //Inch of water at 68F                  
@@ -214,9 +215,8 @@ angular.module('simulatorApp')
 	    });
 	    
 	    $scope.dataModel.var_list = var_list.slice(0, -1);
-		$http.put('http://192.241.187.135:3100/api/device/'+$routeParams.device_id,$scope.dataModel).
-		then(function(response) {
-			
+		DeviceService.updateByID($scope.dataModel,$routeParams.device_id,
+		function(response){
 			$scope.alert = {
 				type : 'success',
 				message : {
@@ -229,9 +229,8 @@ angular.module('simulatorApp')
 					type : null
 				};
 			}, 2000);
-
-		},
-		function(response) {
+		}, 
+		function(response){
 			$scope.alert = {
 				type : 'failed',
 				message : {
@@ -243,11 +242,14 @@ angular.module('simulatorApp')
 	};
     $scope.changed = function(){
 		$scope.dataModel.active = $scope.dataModel.active ? 1:0;		
-		$http.get('http://192.241.187.135:3100/api/device/toggle/'+$routeParams.device_id+'/'+$scope.dataModel.active).
-		then(function(response) {
+		DeviceService.toggleDeviceByID($routeParams.device_id,$scope.dataModel.active,
+		function(response){
 			if(response.data && response.data.status){
 		    	
 		    }
+		}, 
+		function(response){
+			console.log('Error toggling device');
 		});
 		
 	};
@@ -256,13 +258,13 @@ angular.module('simulatorApp')
 		$scope.activate_create = false;
 		$scope.activate_delete = false;
 		$scope.request_status='...';
-		$http.get('http://192.241.187.135/api/v2/general/device/tag/'+$scope.dataModel.device_tag).
-		then(function success(response) {
+		DeviceService.getTargetServerDeviceStatusByTag($scope.dataModel.device_tag,
+		function(response){
 			if(response.data.status==true){
 				$scope.activate_update = true;
 				$scope.activate_create = false;
 				$scope.activate_delete = true;
-				$scope.request_status='Device exist!';
+				$scope.request_status='Device exist in target server!';
 			}
 			else{
 				$scope.activate_update = false;
@@ -270,7 +272,8 @@ angular.module('simulatorApp')
 				$scope.activate_delete = false;
 				$scope.request_status='Something is wrong..';
 			}
-		}, function error(response){
+		}, 
+		function(response){
 			if(response.status==404){
 				$scope.activate_update = false;
 				$scope.activate_create = true;
@@ -287,7 +290,8 @@ angular.module('simulatorApp')
 	};
 	
 	$scope.deleteDeviceInInternalServer = function(){
-		ServerCommunicator.callInternalServer('delete',null,'api/device/tag/'+$scope.dataModel.device_tag,function(res){
+		DeviceService.deleteByTag($scope.dataModel.device_tag,
+		function(res){
 			$scope.request_status = 'Device deleted successfully.';
 			$scope.activate_delete = false;
 			$scope.activate_create = false;
@@ -300,7 +304,8 @@ angular.module('simulatorApp')
 	};
 	
 	$scope.createDeviceInTargetServer = function(){
-		ServerCommunicator.callInternalServer('post',null,'api/device/external/'+$scope.dataModel.device_tag+'/'+$scope.app,function(res){
+		DeviceService.createDeviceInTargetServer($scope.dataModel.device_tag,
+		function(res){
 			$scope.request_status = 'Device created successfully.';
 			$scope.activate_delete = true;
 			$scope.activate_create = false;
@@ -312,7 +317,8 @@ angular.module('simulatorApp')
 	};
 	
 	$scope.deleteDeviceInTargetServer = function(){
-		ServerCommunicator.callInternalServer('delete',null,'api/device/external/'+$scope.dataModel.device_tag+'/'+$scope.app,function(res){
+		DeviceService.deleteDeviceInTargetServer($scope.dataModel.device_tag,
+		function(res){
 			$scope.request_status = 'Device deleted successfully.';
 			$scope.activate_delete = false;
 			$scope.activate_create = true;
@@ -324,7 +330,7 @@ angular.module('simulatorApp')
 	};
 	
 	$scope.updateDeviceInTargetServer = function(){
-		ServerCommunicator.callInternalServer('put',null,'api/device/external/'+$scope.dataModel.device_tag+'/'+$scope.app,
+		Device.updateDeviceInTargetServer($scope.dataModel.device_tag,
 		function(res){
 			$scope.request_status = 'Device updated successfully.';
 		}, 

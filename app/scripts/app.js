@@ -55,4 +55,10 @@ angular
         redirectTo: '/'
       });
       $locationProvider.hashPrefix('');
+  })
+  .controller('AppController', function($http, $scope){
+	$http.get("../config.json").then(function(response) { //success
+		$scope.app_url = response.data.local_endpoint;	
+	});
+			
   });

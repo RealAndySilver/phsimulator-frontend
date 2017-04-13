@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 
 /**
  * @ngdoc function
@@ -8,27 +8,30 @@
  * Controller of the simulatorApp
  */
 angular.module('simulatorApp')
-  .controller('SettingsCtrl', function ($scope,$http, ServerCommunicator) {
-	  $scope.alert={
-		  type : null,
-		  message : {
-			  strong : '',
-			  text : ''
-		  }
-	  };
-	  $scope.update_rate_options = [60,120,180,240,300];
-    $scope.init = function(){
-		getSettings();
+  .controller('SettingsCtrl', function ($scope,$http, SettingsService, ServerService, $rootScope) {
+	$scope.alert = {
+		type : null,
+		message : {
+			strong : '',
+			text : ''
+		}
 	};
-	function getSettings(){
-		$http.get('http://192.241.187.135:3100/api/settings/1').
-		then(function(response) {
+	$scope.update_rate_options = [60,120,180,240,300];
+    $scope.init = function(){
+		$scope.getSettings();
+	};
+	$scope.getSettings = function(){
+		SettingsService.getSettings(function(response){
 			if(response.data && response.data.status){
 		    	$scope.settings = response.data.data;
 		    	$scope.settings.data.update_rate = $scope.settings.data.update_rate+'';
+		    	$rootScope.endpoint = $scope.settings.data.endpoint;
 		    }
+		}, 
+		function(response){
+			console.log('Error getting settings');
 		});
-	}
+	};
 	$scope.update = function(){
 		$scope.alert={
 			type : null,
@@ -37,10 +40,10 @@ angular.module('simulatorApp')
 				text : ''
 			}
 		};
-		$http.put('http://192.241.187.135:3100/api/settings/1',$scope.settings).
-		then(function(response) {
+		SettingsService.update($scope.settings,
+		function(response){
 			if(response.data && response.data.status){
-		    	getSettings();
+		    	$scope.getSettings();
 		    	$scope.alert={
 					type : 'success',
 					message : {
@@ -58,14 +61,16 @@ angular.module('simulatorApp')
 					}
 				};
 		    }
+		}, 
+		function(response){
+			console.log('Error updating settings');
 		});
 	};
 	$scope.reset = function(){
 		$scope.alert.type=null;
-		$http.put('http://192.241.187.135:3100/api/settings/default/1',{}).
-		then(function(response) {
+		SettingsService.reset(function(response) {
 			if(response.data && response.data.status){
-		    	getSettings();
+		    	$scope.getSettings();
 		    	$scope.alert={
 					type : 'warning',
 					message : {
@@ -83,12 +88,14 @@ angular.module('simulatorApp')
 					}
 				};
 		    }
-		});
+		}, function(res){
+			console.log('error', res);
+		});	
 	};
 
 	$scope.getServerStatus = function(){
 		$scope.server_status='';
-		ServerCommunicator.callExternalServer('get',null,'/general/admin/status',function(res){
+		ServerService.getStatus(function(res){
 			if(res.data=='ok'){
 				$scope.server_status='Ok!';
 			}
@@ -102,7 +109,7 @@ angular.module('simulatorApp')
 	
 	$scope.toggleSwitch = function(){
 		$scope.settings.active = $scope.settings.active ? 1:0;	
-		ServerCommunicator.callInternalServer('get',null,'api/settings/toggle/1/'+$scope.settings.active,function(res){
+		SettingsService.toggleSwitch($scope.settings.active,function(res){
 			console.log(res);
 		}, function(res){
 			console.log('error', res);
