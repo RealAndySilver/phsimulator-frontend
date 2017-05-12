@@ -218,6 +218,13 @@ body {
 .main-page{
 	height: 700px;
 }
+.overflow-box{
+	overflow-y: scroll;
+	height: 400px;
+	margin: 20px 0px;
+	font-size: 12px;
+	list-style: none;
+}
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {

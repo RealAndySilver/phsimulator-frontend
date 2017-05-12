@@ -2,24 +2,27 @@
 	<div class="float-left" style="font-size:30px;"><b>Device List</b> <span class="badge badge-important">{{device_list.length}}</span></div>
 	<button type="button" class="btn btn-success add-button" ng-click="new_device()"><b>Add Device +</b></button>
 </div>
-<div ng-init="init()">
-	<li class="no-list-style tall-list" ng-repeat="device in device_list">
-			<span class="label label-danger type-tag">{{device.polling_info.device_type_name}}</span>
-			<div class="left-container-for-list">
-				<div class="device-title"><b> <a href="#/update_device/{{device.id}}">{{device.device_tag}}</a></b></div>
-				
-				<h3>
-				<span class="label label-info">{{device.device_type}}</span>	
-				<span class="label label-primary">{{device.update_rate}}</span> 
-				</h3>
-			</div>
-			<div class="center-left-container-for-list">
-				<span class="badge">Gateway Tag : {{device.gateway_tag}}</span>
-				<span class="badge">Gateway Address : {{device.gateway_address}}</span>
-				<span class="badge">Network ID : {{device.network_id}}</span>
-				<span class="badge">Out Of Service : {{device.out_of_service ? true:false}}</span>
-				<span class="badge">Var List : {{device.var_list}}</span>
-			</div>
-			<toggle class="toggle" ng-model="device.active" ng-change="changed(device)" on="On" off="Off" onstyle="btn-success"></toggle>
-	</li>
+<div>
+	<div ng-repeat="(app_name, devices) in filtered_devices" ng-if="devices.length>0">
+		<div style="font-size:30px; margin-bottom: 20px;"><b>{{app_name}}</b> <span class="badge badge-important">{{devices.length}}</span> </div>
+		<li class="no-list-style tall-list" ng-repeat="device in devices">
+				<span class="label label-danger type-tag">{{device.polling_info.device_type_name}}</span>
+				<div class="left-container-for-list">
+					<div class="device-title"><b> <a href="#/update_device/{{device.id}}">{{device.device_tag}}</a></b></div>
+					
+					<h3>
+					<span class="label label-info">{{device.device_type}}</span>	
+					<span class="label label-primary">{{device.update_rate}}</span> 
+					</h3>
+				</div>
+				<div class="center-left-container-for-list">
+					<span class="badge">Gateway Tag : {{device.gateway_tag}}</span>
+					<span class="badge">Gateway Address : {{device.gateway_address}}</span>
+					<span class="badge">Network ID : {{device.network_id}}</span>
+					<span class="badge">Out Of Service : {{device.out_of_service ? true:false}}</span>
+					<span class="badge">Var List : {{device.var_list}}</span>
+				</div>
+				<toggle class="toggle" ng-model="device.active" ng-change="changed(device)" on="On" off="Off" onstyle="btn-success"></toggle>
+		</li>
+	</div>
 </div>

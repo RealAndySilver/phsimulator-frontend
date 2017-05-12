@@ -39,7 +39,7 @@ angular.module('simulatorApp')
 	}
 
 	self.callInternalServer = function(type,data,path,success_callback,error_callback){
-		getSettings(function(err,response){
+		//getSettings(function(err,response){
 			if(type.toLowerCase() == 'post'){type = 'post';}
 			else if(type.toLowerCase() == 'put'){type = 'put';}
 			else if(type.toLowerCase() == 'get'){type = 'get';}
@@ -47,7 +47,7 @@ angular.module('simulatorApp')
 			else {type = 'get';}
 			$http[type](app_url+path,data).
 			then(success_callback, error_callback);
-		});
+		//});
 	}
 	self.callExternalServer = function(type,data,path,success_callback,error_callback){
 		getSettings(function(err,response){

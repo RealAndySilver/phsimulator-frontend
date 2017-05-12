@@ -8,7 +8,7 @@
  * Controller of the simulatorApp
  */
 angular.module('simulatorApp')
-  .controller('SettingsCtrl', function ($scope,$http, SettingsService, ServerService, $rootScope) {
+  .controller('SettingsCtrl', function ($scope,$http, SettingsService, ServerService, ListService, $rootScope) {
 	$scope.alert = {
 		type : null,
 		message : {
@@ -31,6 +31,13 @@ angular.module('simulatorApp')
 		function(response){
 			console.log('Error getting settings');
 		});
+	};
+	ListService.getList(function(response){
+		$scope.lists = response.data.data;
+		console.log('Lista',$scope.lists);
+	});
+	$scope.restoreSettings = function(){
+		$scope.settings.data.settings = $scope.lists.settings;	
 	};
 	$scope.update = function(){
 		$scope.alert={
